@@ -1,0 +1,11 @@
+{
+  "name": "smartdacha",
+  "version": "1.0.0",
+  "description": "My smart house",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint js/"
+  },
+  "author": "al",
+  "license": "ISC"
+}
