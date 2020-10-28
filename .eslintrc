@@ -1,0 +1,15 @@
+root: true
+
+env:
+  es6: true
+  browser: true
+  node: true
+
+"rules": {
+       "indent": [2, "tab"]
+       
+    }  
+
+extends:
+  "htmlacademy/es5.5"
+
