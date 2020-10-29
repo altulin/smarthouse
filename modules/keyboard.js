@@ -13,28 +13,17 @@
 		gear: `\u{2699}`,
 		hammer: `\u{1f6e0}`,
 		clock: `\u{1f55b}`,
-		proc: `\u{1F4BB}`
-		
+		proc: `\u{1F4BB}`,
+		face: `\u{1F636}`
 	};
 
 	exports.objects = {
-		emoji: {
-			tree: emoji.tree, 
-			therm: emoji.therm,	
-			lamp: emoji.lamp,	
-			man: emoji.man,	
-			house: emoji.tree, 
-			backhand: emoji.backhand,
-			gear: emoji.gear,
-			proc: emoji.proc,
-			hot: emoji.hot,
-			clock: emoji.clock
-		},
+		emoji,
 
 		main: {
 			"reply_markup": {
-				"keyboard": [[`${emoji.house} Дом`, `${emoji.tree} Улица`, `${emoji.man} Разное`]], 
-				resize_keyboard: true}},
+				"keyboard": [[`${emoji.house} Дом`, `${emoji.tree} Улица`, `${emoji.man} Разное`]],
+				"resize_keyboard": true}},
 
 		weatherlampExitOn: {
 			"reply_markup": {"inline_keyboard":
@@ -49,7 +38,7 @@
 		},
 
 		other: {
-			"reply_markup": {"inline_keyboard":	[[{"text": `${emoji.man}`, "callback_data": `body`}]]}
+			"reply_markup": {"inline_keyboard":	[[{"text": `${emoji.man} Упражнения`, "callback_data": `body`}]]}
 		},
 
 		sport: {"reply_markup": {"inline_keyboard": [
@@ -62,25 +51,25 @@
 		},
 
 		houseOff: {"reply_markup": {"inline_keyboard": [
-			[{"text": `${emoji.hot} выключить`, "callback_data": "houseOff"}],
-			[{"text": `${emoji.gear} ${emoji.hammer} ${emoji.therm}`, "callback_data": "gear"}],
-			[{"text": `${emoji.clock} счетчики`, "callback_data": "counter"}]]}
+			[{"text": `${emoji.hot} выключить`, "callback_data": `houseOff`}],
+			[{"text": `${emoji.gear} ${emoji.hammer} ${emoji.therm}`, "callback_data": `gear`}],
+			[{"text": `${emoji.clock} счетчики`, "callback_data": `counter`}]]}
 		},
 
 		houseOn: {"reply_markup": {"inline_keyboard": [
-			[{"text": `${emoji.hot} включить`, "callback_data": "houseOn"}],
-			[{"text": `${emoji.gear} ${emoji.hammer} ${emoji.therm}`, "callback_data": "gear"}],
-			[{"text": `${emoji.clock} счетчики`, "callback_data": "counter"}]]}
+			[{"text": `${emoji.hot} включить`, "callback_data": `houseOn`}],
+			[{"text": `${emoji.gear} ${emoji.hammer} ${emoji.therm}`, "callback_data": `gear`}],
+			[{"text": `${emoji.clock} счетчики`, "callback_data": `counter`}]]}
 		},
 
 		rpiOn: {"reply_markup": {"inline_keyboard": [
-			[{"text": `${emoji.hot} включить обогрев`, "callback_data": "rpiOn"}]]}
+			[{"text": `${emoji.hot} включить обогрев`, "callback_data": `rpiOn`}]]}
 		},
 
 		rpiOff: {"reply_markup": {"inline_keyboard": [
-			[{"text": `${emoji.hot} выключить обогрев`, "callback_data": "rpiOff"}]]}
+			[{"text": `${emoji.hot} выключить обогрев`, "callback_data": `rpiOff`}]]}
 		},
 
-		reply: {"reply_markup": {force_reply: true}}
+		reply: {"reply_markup": {"force_reply": true}}
 	};
 })();
