@@ -14,7 +14,7 @@
 
 	exports.weather = {
 		line,
-		getWeather(id, bot) {
+		getForecastWeather(id, bot) {
 			weather.getWeatherForecastForDays(3, (err, obj) => {
 				if (err) {
 					bot.sendMessage(id, `Что-то пошло не так!`, keyboard.objects.main);

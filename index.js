@@ -3,6 +3,7 @@ process.env.NTBA_FIX_319 = 1;
 const config = require(`config`);
 const keyboard = require(`./modules/keyboard`);
 const weather = require(`./modules/weather`);
+const crontab = require(`./modules/crontab`);
 const TelegramBot = require(`node-telegram-bot-api`);
 const sensor = require(`ds18b20-raspi`);
 const fs = require(`fs`);
@@ -118,7 +119,7 @@ const getResponse = () => {
 			}
 
 			if (dataMsg.includes(`weather`)) {
-				weather.weather.getWeather(chatId, bot);
+				weather.weather.getForecastWeather(chatId, bot);
 			}
 		} else {
 			if (dataMsg.includes(`body`)) {
@@ -134,6 +135,7 @@ const getResponse = () => {
 };
 
 const main = () => {
+	crontab.cron.createTasksSunPositions(bot);
 	getResponse();
 };
 
