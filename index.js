@@ -77,6 +77,7 @@ const getResponse = () => {
 				} else {
 					sendMessage(chatId, `${reply.get(`errorMsg`)[0]}${textMsg}`, reply.get(`errorMsg`)[1]);
 				}
+
 		} else {
 			if (replyGuest.has(textMsg)) {
 				sendMessage(chatId, `${textMsg}${replyGuest.get(textMsg)[0]}`, replyGuest.get(textMsg)[1]);
