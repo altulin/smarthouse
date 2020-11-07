@@ -14,7 +14,8 @@
 		hammer: `\u{1f6e0}`,
 		clock: `\u{1f55b}`,
 		proc: `\u{1F4BB}`,
-		face: `\u{1F636}`
+		face: `\u{1F636}`,
+		pouting: `\u{1F621}`
 	};
 
 	exports.objects = {

@@ -9,7 +9,6 @@
 	const longitude = config.get(`sun.longitude`);
 	const land = config.get(`sun.height`);
 	const city = config.get(`city`);
-
 	const getTimeSunPositions = () => {
 		const sunObject = sunCalc.getTimes(new Date(), latitude, longitude, land);
 		const timesObject = {
@@ -22,12 +21,12 @@
 	};
 
 	const onLampExit = (bot) => {
-		const message = `Лампу выключаю`;
+		const message = `Лампу включаю`;
 		bot.sendMessage(config.get(`myId`), message, keyboard.objects.main);
 	};
 
 	const offLampExit = (bot) => {
-		const message = `Лампу включаю`;
+		const message = `Лампу выключаю`;
 		bot.sendMessage(config.get(`myId`), message, keyboard.objects.main);
 	};
 
@@ -38,14 +37,6 @@
 		task.setTime(newTime);
 		task.start();
 		bot.sendMessage(config.get(`myId`), message, keyboard.objects.main);
-		// const newTimeRise = new cronTime(`0 ${newSunTimes.minuteSunrise} ${newSunTimes.hourSunrise} * * *`);
-		// taskSunrise.setTime(newTimeRise);
-		// taskSunrise.start();
-		// const newTimeSet = new cronTime(`0 ${newSunTimes.minuteSunset} ${newSunTimes.hourSunset} * * *`);
-		// taskSunset.setTime(newTimeSet);
-		// taskSunset.start();
-		// const message = `${newSunTimes.minuteSunrise}-${newSunTimes.hourSunrise} : ${newSunTimes.minuteSunset}-${newSunTimes.hourSunset}`;
-		// bot.sendMessage(config.get(`myId`), message, keyboard.objects.main);
 	};
 
 	exports.cron = {
@@ -63,7 +54,6 @@
 			const taskCorrection = new CronJob(`0 0 1 * * *`, () => {
 				сhangeTasksSun(taskSunrise, `Sunrise`, bot);
 				сhangeTasksSun(taskSunset, `Sunset`, bot);
-				// сhangeTasksSun(taskSunrise, taskSunset, bot);
 			}, null, true, `Asia/${city}`);
 			/* eslint-enable no-unused-vars */
 		}

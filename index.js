@@ -12,7 +12,6 @@ const line = weather.weather.line;
 const emoji = keyboard.objects.emoji;
 const addr = config.get(`addr`);
 const name = config.get(`name`);
-
 const bot = new TelegramBot(config.get(`token`), {polling: true});
 
 const getTempRpi = () => {
@@ -25,111 +24,90 @@ const getTemp = (detector) => {
 
 const sendMessage = (id, message, markup) => bot.sendMessage(id, message, markup);
 
-// const checkGpio = (arg) => {
-// 	let state;
-// 	arg.readSync() === 0 ? state = ` выкл.` : state = ` вкл.`;
-// 	return state;
-// };
+const sendMessageMe = (id, text, user) => {
+	const userName = (user) ? `@${user}` : `no name ${emoji.face}`;
+	const message = `У нас гости!${line}${text} \nid: ${id}\nuser: ${userName}`;
+	bot.sendMessage(config.get(`myId`), message, keyboard.objects.main);
+};
+
+const getCounterMsg = (response) => {
+	let message;
+	if (response.split(` `).length === 2) {
+		const hvs = response.split(` `)[0];
+		const gvs = response.split(` `)[1];
+		message = `Показания счетчиков \n${addr} \n${name} \nХВС: ${hvs} \nГВС: ${gvs}`;
+		sendMessage(config.get(`myId`), message, keyboard.objects.main);
+	}	else {
+		message = `\u{1f61b} Попробуй ещё раз`;
+		sendMessage(config.get(`myId`), message, keyboard.objects.main);
+	}
+};
+
+const reply = new Map([
+	[`/start`, [`${line}Привет! Выбери нужный пункт ${emoji.backhand}`, keyboard.objects.main]],
+	[`${emoji.tree} Улица`, [`${line}${emoji.therm} ${getTemp`street`} °C${line}${emoji.lamp}`,	keyboard.objects.weatherlampExitOn, keyboard.objects.weatherlampExitOff]],
+	[`${emoji.house} Дом`, [`${line}${emoji.therm} ${getTemp`house`} °C${line}${emoji.lamp} `, keyboard.objects.houseOn, keyboard.objects.houseOff]],
+	[`${emoji.man} Разное`, [`${line}Для связи в телеграмм: @altulin`, keyboard.objects.other]],
+	[`errorMsg`, [`${emoji.pouting}${line}Неизвестная команда: \n`, keyboard.objects.main]],
+	[`body`, [`Что будем сегодня делать?`, keyboard.objects.sport]],
+	[`gear`, [`${emoji.gear} RPi${line}${emoji.therm} ${getTemp`rpi`} °C${line}${emoji.proc} ${getTempRpi()}${line}${emoji.hot}`, keyboard.objects.rpiOff]],
+	[`counter`, [`${emoji.clock} ХВС ГВС через пробел`, keyboard.objects.reply]]
+]);
+
+const replyGuest = new Map([
+	[`/start`, [`${line}Привет! Выбери нужный пункт ${emoji.backhand}`, keyboard.objects.main]],
+	[`${emoji.tree} Улица`, [`${line}${emoji.therm} ${getTemp`street`} °C${line} ${emoji.lamp} Освещение выкл.`, keyboard.objects.main]],
+	[`${emoji.house} Дом`, [`${line}${emoji.therm} 25 °C${line}${emoji.lamp} Отопление вкл.`, keyboard.objects.main]],
+	[`${emoji.man} Разное`, [`${line}Для связи в телеграмм: @altulin`, keyboard.objects.other]],
+	[`body`, [`Что будем сегодня делать?`, keyboard.objects.sport]]
+]);
 
 const getResponse = () => {
 	bot.on(`message`, (msg) => {
 		const chatId = msg.from.id;
-		const userName = msg.from.username;
 		const textMsg = msg.text;
-		let message = ``;
-		let messageUserName = ``;
+		const replyMsg = msg.reply_to_message;
+		const userName = msg.from.username;
+
 		if (users.toString().includes(chatId)) {
-			if (textMsg.includes(`/start`)) {
-				message = `Привет! Выбери нужный пункт ${emoji.backhand}`;
-				sendMessage(chatId, message, keyboard.objects.main);
-			}
-
-			if (textMsg.includes(`Улица`)) {
-				message = `${textMsg}${line}${emoji.therm} ${getTemp`street`} °C${line}${emoji.lamp} `;
-				sendMessage(chatId, message, keyboard.objects.weatherlampExitOn);
-			}
-
-			if (textMsg.includes(`Дом`)) {
-				message = `${textMsg}${line}${emoji.therm} ${getTemp`house`} °C${line}${emoji.lamp} `;
-				sendMessage(chatId, message, keyboard.objects.houseOff);
-			}
-
-			if (textMsg.includes(`Разное`)) {
-				message = `${textMsg}${line}Для связи в телеграмм: @altulin`;
-				sendMessage(chatId, message, keyboard.objects.other);
-			}
-
-			if (msg.reply_to_message) {
-				if (msg.reply_to_message.text.includes(`${emoji.clock} ХВС ГВС через пробел`)) {
-					if (textMsg.split(` `).length === 2) {
-						const hvs = textMsg.split(` `)[0];
-						const gvs = textMsg.split(` `)[1];
-						message = `Показания счетчиков \n${addr} \n${name} \nХВС: ${hvs} \nГВС: ${gvs}`;
-						sendMessage(chatId, message, keyboard.objects.main);
-					}	else {
-						message = `\u{1f61b} Попробуй ещё раз`;
-						bot.sendMessage(chatId, message, keyboard.objects.main);
-					}
+				if (replyMsg) {
+					getCounterMsg(textMsg);
+				} else if (reply.has(textMsg)) {
+					sendMessage(chatId, `${textMsg}${reply.get(textMsg)[0]}`, reply.get(textMsg)[1]);
+				} else {
+					sendMessage(chatId, `${reply.get(`errorMsg`)[0]}${textMsg}`, reply.get(`errorMsg`)[1]);
 				}
-			}
 		} else {
-			if (textMsg.includes(`Улица`)) {
-				message = `${textMsg}${line}${emoji.therm} ${getTemp`street`} °C${line}${emoji.lamp} Освещение выкл.`;
-				sendMessage(chatId, message, keyboard.objects.main);
+			if (replyGuest.has(textMsg)) {
+				sendMessage(chatId, `${textMsg}${replyGuest.get(textMsg)[0]}`, replyGuest.get(textMsg)[1]);
+			} else {
+				sendMessage(chatId, `${reply.get(`errorMsg`)[0]}${textMsg}`, reply.get(`errorMsg`)[1]);
 			}
-
-			if (textMsg.includes(`Дом`)) {
-				message = `${textMsg}${line}${emoji.therm} 25 °C${line}${emoji.lamp} Отопление вкл.`;
-				sendMessage(chatId, message, keyboard.objects.main);
-			}
-
-			if (textMsg.includes(`Разное`)) {
-				message = `${textMsg}${line}Для связи в телеграмм: @altulin`;
-				sendMessage(chatId, message, keyboard.objects.other);
-			}
-
-			messageUserName = (userName) ? `@${userName}` : `no name ${emoji.face}`;
-			message = `У нас гости!\nсообщение: ${textMsg}\nid: ${chatId} user: ${messageUserName}`;
-			sendMessage(config.get(`myId`), message, keyboard.objects.main);
+			sendMessageMe(chatId, `${textMsg}`, userName);
 		}
 	});
 
 	bot.on(`callback_query`, (msg) => {
 		const chatId = msg.from.id;
 		const userName = msg.from.username;
-		const dataMsg = msg.data;
-		let message = ``;
-		let messageUserName = ``;
+		const textMsg = msg.data;
 
 		if (users.toString().includes(chatId)) {
-
-			if (dataMsg.includes(`body`)) {
-				message = `Что будем сегодня делать?`;
-				sendMessage(chatId, message, keyboard.objects.sport);
-			}
-
-			if (dataMsg.includes(`gear`)) {
-				message = `${emoji.gear} RPi${line}${emoji.therm} ${getTemp`rpi`} °C${line}${emoji.proc} ${getTempRpi()}${line}${emoji.hot}`;
-				sendMessage(chatId, message, keyboard.objects.rpiOff);
-			}
-
-			if (dataMsg.includes(`counter`)) {
-				message = `${emoji.clock} ХВС ГВС через пробел`;
-				sendMessage(chatId, message, keyboard.objects.reply);
-			}
-
-			if (dataMsg.includes(`weather`)) {
-				weather.weather.getForecastWeather(chatId, bot);
-			}
+			if (textMsg.includes(`weather`)) {
+					weather.weather.getForecastWeather(chatId, bot);
+				} else if (reply.has(textMsg)) {
+					sendMessage(chatId, `${reply.get(textMsg)[0]}`, reply.get(textMsg)[1]);
+				} else {
+					sendMessage(chatId, `${reply.get(`errorMsg`)[0]}${textMsg}`, reply.get(`errorMsg`)[1]);
+				}
 		} else {
-			if (dataMsg.includes(`body`)) {
-				message = `Что будем сегодня делать?`;
-				sendMessage(chatId, message, keyboard.objects.sport);
-			}
 
-			messageUserName = (userName) ? `@${userName}` : `no name ${emoji.face}`;
-			message = `У нас гости!\nсообщение: ${dataMsg}\nid: ${chatId} user: ${messageUserName}`;
-			sendMessage(config.get(`myId`), message, keyboard.objects.main);
+			if (replyGuest.has(textMsg)) {
+				sendMessage(chatId, `${replyGuest.get(textMsg)[0]}`, replyGuest.get(textMsg)[1]);
+			} else {
+				sendMessage(chatId, `${reply.get(`errorMsg`)[0]}${textMsg}`, reply.get(`errorMsg`)[1]);
+			}
+			sendMessageMe(chatId, `${textMsg}`, userName);
 		}
 	});
 };
