@@ -1,29 +1,27 @@
-'use strict';
-(function () {
-	const emoji = {
-		tree: `\u{1F332}`,
-		therm: `\u{1F321}`,
-		lamp: `\u{1F4A1}`,
-		man: `\u{1f3cb}`,
-		house: `\u{1F3E1}`,
-		umbrella: `\u{2602}`,
-		envelope: `\u{2709}`,
-		backhand: `\u{1F447}`,
-		hot: `\u{2668}`,
-		gear: `\u{2699}`,
-		hammer: `\u{1f6e0}`,
-		clock: `\u{1f55b}`,
-		proc: `\u{1F4BB}`,
-		face: `\u{1F636}`,
-		pouting: `\u{1F621}`
-	};
+const emoji = {
+	tree: `\u{1F332}`,
+	therm: `\u{1F321}`,
+	lamp: `\u{1F4A1}`,
+	man: `\u{1f3cb}`,
+	house: `\u{1F3E1}`,
+	umbrella: `\u{2602}`,
+	envelope: `\u{2709}`,
+	backhand: `\u{1F447}`,
+	hot: `\u{2668}`,
+	gear: `\u{2699}`,
+	hammer: `\u{1f6e0}`,
+	clock: `\u{1f55b}`,
+	proc: `\u{1F4BB}`,
+	face: `\u{1F636}`,
+	pouting: `\u{1F621}`
+};
 
-	exports.objects = {
+export const keyboards = {
 		emoji,
 
 		main: {
 			"reply_markup": {
-				"keyboard": [[`${emoji.house} Дом`, `${emoji.tree} Улица`, `${emoji.man} Разное`]],
+				"keyboard": [[`${emoji.house} Дом`, `${emoji.tree} Улица`, `Разное`]],
 				"resize_keyboard": true}},
 
 		weatherlampExitOn: {
@@ -73,4 +71,3 @@
 
 		reply: {"reply_markup": {"force_reply": true}}
 	};
-})();
