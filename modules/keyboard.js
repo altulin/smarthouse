@@ -1,4 +1,4 @@
-const emoji = {
+export const emoji = {
 	tree: `\u{1F332}`,
 	therm: `\u{1F321}`,
 	lamp: `\u{1F4A1}`,
@@ -17,8 +17,6 @@ const emoji = {
 };
 
 export const keyboards = {
-		emoji,
-
 		main: {
 			"reply_markup": {
 				"keyboard": [[`${emoji.house} Дом`, `${emoji.tree} Улица`, `Разное`]],
