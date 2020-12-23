@@ -35,16 +35,16 @@ export const keyboards = {
 		},
 
 		other: {
-			"reply_markup": {"inline_keyboard":	[[{"text": `${emoji.man} Упражнения`, "callback_data": `body`}]]}
+			"reply_markup": {"inline_keyboard":	[[{"text": `${emoji.man} Упражнения`, "callback_data": `${emoji.man}`}]]}
 		},
 
 		sport: {"reply_markup": {"inline_keyboard": [
-			[{"text": `${emoji.man} Спина`, "callback_data": `back_exercises`}],
-			[{"text": `${emoji.man} Трицепс`, "callback_data": `triceps_exercises`}],
-			[{"text": `${emoji.man} Ноги`, "callback_data": `legs_exercises`}],
-			[{"text": `${emoji.man} Плечи`, "callback_data": `shoulders_exercises`}],
-			[{"text": `${emoji.man} Грудь`, "callback_data": `chest_exercises`}],
-			[{"text": `${emoji.man} Бицепс`, "callback_data": `biceps_exercises`}]]}
+			[{"text": `${emoji.man} Спина`, "callback_data": `Спина`}],
+			[{"text": `${emoji.man} Трицепс`, "callback_data": `Трицепс`}],
+			[{"text": `${emoji.man} Ноги`, "callback_data": `Ноги`}],
+			[{"text": `${emoji.man} Плечи`, "callback_data": `Плечи`}],
+			[{"text": `${emoji.man} Грудь`, "callback_data": `Грудь`}],
+			[{"text": `${emoji.man} Бицепс`, "callback_data": `Бицепс`}]]}
 		},
 
 		houseOff: {"reply_markup": {"inline_keyboard": [
