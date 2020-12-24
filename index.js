@@ -28,23 +28,53 @@ class SendMessage {
 		this._resonseMsg = null;
 		this._responseMarkup = null;
 		this._id = null;
-
+		this._users = Object.values(config.get(`userId`));
+		this._guest = `guest`;
+		this._errorMsg = `errorMsg`;
 	}
 
 	createResponse(id, msg) {
 		this._id = id;
 		this._msg = msg;
 
+		if (!this._reply.has(this._msg)) {
+			this._resonseMsg = `${this._reply.get(`errorMsg`)[0]}${this._msg}`;
+			this._responseMarkup = this._reply.get(`errorMsg`)[1];
+			// this._getResponse(this._msg);
 
-		this._resonseMsg = this._reply.get(`errorMsg`)[0];
-		this._responseMarkup = this._reply.get(`errorMsg`)[1];
+		} else if (!this._users.toString().includes(this._id)
+			&& this._reply.get(this._msg).includes(`guest`)) {
+			this._resonseMsg = `${this._reply.get(this._msg)[0]}${this._msg}`;
+			this._responseMarkup = this._reply.get(this._msg)[1];
+			// this._getResponse(this._guest);
+
+		} else if (!this._users.toString().includes(this._id)
+		&& !this._reply.get(this._msg).includes(`guest`)) {
+			this._resonseMsg = this._reply.get(`access`)[0];
+			this._responseMarkup = this._reply.get(`access`)[1];
+			// this._getResponse(this._msg);
+
+		} else if (this._users.toString().includes(this._id)) {
+			// this._resonseMsg = `${this._reply.get(this._msg)[0]}${this._msg}`;
+			// this._responseMarkup = this._reply.get(this._msg)[1];
+			this._getResponse(this._msg);
+		}
 
 
+		this._sendMessage();
+
+		this._resonseMsg = null;
+		this._responseMarkup = null;
+	}
+
+	_getResponse(msg) {
+		this._resonseMsg = `${this._reply.get(msg)[0]}${msg}`;
+		this._responseMarkup = this._reply.get(msg)[1];
 		this._sendMessage();
 	}
 
 	_sendMessage() {
-    this._bot.sendMessage(this._id, this._resonseMsg, this._responseMarkup);
+		this._bot.sendMessage(this._id, this._resonseMsg, this._responseMarkup);
 	}
 }
 

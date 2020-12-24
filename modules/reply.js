@@ -17,19 +17,19 @@ const getTempRpi = () => {
 export const reply = new Map([
 	[
     `/start`,
-    [[`${line}Привет! Выбери нужный пункт ${emoji.backhand}`], [keyboards.main], [`guest`]]
+    [`${line}Привет! Выбери нужный пункт ${emoji.backhand}`, keyboards.main, `guest`]
   ],
 	[
     `${emoji.tree} Улица`,
-    [[`${line}${emoji.therm} ${getTemp`street`} °C${line}${emoji.lamp}`],	[keyboards.weatherlampExitOn, keyboards.weatherlampExitOff], [`guest`]]
+    [`${line}${emoji.therm} ${getTemp`street`} °C${line}${emoji.lamp}`,	keyboards.weatherlampExitOn, keyboards.weatherlampExitOff, `guest`]
   ],
 	[
     `${emoji.house} Дом`,
-    [[`${line}${emoji.therm} ${getTemp`house`} °C${line}${emoji.lamp} `], [keyboards.houseOn, keyboards.houseOff]]
+    [`${line}${emoji.therm} ${getTemp`house`} °C${line}${emoji.lamp} `, keyboards.houseOn, keyboards.houseOff]
   ],
 	[
     `Разное`,
-    [[`${line}Для связи в телеграмм: @altulin`], [keyboards.other], [`guest`]]
+    [`${line}Для связи в телеграмм: @altulin`, keyboards.other, `guest`]
   ],
 	[
     `errorMsg`,
@@ -37,16 +37,20 @@ export const reply = new Map([
   ],
 	[
     `${emoji.man}`,
-    [[`${line}Что будем сегодня делать?`], [keyboards.sport], [`guest`]]
+    [`${line}Что будем сегодня делать?`, keyboards.sport, `guest`]
   ],
 	[
     `gear`,
-    [[`${emoji.gear} RPi${line}${emoji.therm} ${getTemp`rpi`} °C${line}${emoji.proc} ${getTempRpi()}${line}${emoji.hot}`], [keyboards.rpiOff]]
+    [`${emoji.gear} RPi${line}${emoji.therm} ${getTemp`rpi`} °C${line}${emoji.proc} ${getTempRpi()}${line}${emoji.hot}`, keyboards.rpiOff]
   ],
 	[
     `counter`,
-    [[`${emoji.clock} ХВС ГВС через пробел`], [keyboards.reply]]
+    [`${emoji.clock} ХВС ГВС через пробел`, keyboards.reply]
   ],
+	[
+    `access`,
+    [`${emoji.pouting}${line}Эта команда для вас не доступна`, keyboards.main]
+  ]
   // [
   //   `Спина`,
   //   [[createExerisesPlan(`back`)], [keyboards.main], [`guest`]]
