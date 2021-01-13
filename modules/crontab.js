@@ -7,6 +7,7 @@ const latitude = config.get(`sun.latitude`);
 const longitude = config.get(`sun.longitude`);
 const land = config.get(`sun.height`);
 const city = config.get(`city`);
+// import { bot } from "./modules/bot.js";
 
 const getTimeSunPositions = () => {
 	const sunObject = sunCalc.getTimes(new Date(), latitude, longitude, land);

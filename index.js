@@ -1,107 +1,103 @@
 // process.env.NTBA_FIX_319 = 1
 import { bot } from "./modules/bot.js";
 import { keyboards } from "./modules/keyboard.js";
-import { reply } from "./modules/reply.js";
+import { reply, text, access, getTemp, sensors, power, exersiseTypes } from "./modules/reply.js";
 import { line } from "./modules/weather.js";
-import { createTasksSunPositions } from "./modules/crontab.js";
-// import SimpleSendMessage from "./modules/simple_send_message.js";
-import CounterSendMessage from "./modules/counter.js";
-import VisitSendMessage from "./modules/visit.js";
-import  config  from "config";
+import config from "config";
+
+const special = new Set([`quest`, `errorMsg`, `access`]);
+const listenerList = [`message`, `callback_query`];
+const users = Object.values(config.get(`userId`));
 
 
-// const sendMessage = (id, message, markup) => bot.sendMessage(id, message, markup);
+const getResponseAboutGuest = (id, msg, first_name, username) => {
+	const myId = config.get(`myId`);
+	const responseMsg =
+		`У нас гости!\nимя: ${first_name}\nusername: @${username}\nid: ${id}\nкоманда: ${msg}`;
+	const responseMarkup = keyboards.main;
+	sendMessage(myId, responseMsg, responseMarkup);
+}
 
-// const sendMessageMe = (id, text, user) => {
-// 	const userName = (user) ? `@${user}` : `no name ${emoji.face}`;
-// 	const message = `У нас гости!${line}${text} \nid: ${id}\nuser: ${userName}`;
-// 	bot.sendMessage(get(`myId`), message, keyboards.main);
-// 	// return;
-// };
 
+const sendMessage = (id, responseMsg, responseMarkup) => {
+	bot.sendMessage(id, responseMsg, responseMarkup);
+};
 
-class SendMessage {
-	constructor() {
-		this._bot = bot;
-		this._keyboards = keyboards;
-		this._reply = reply;
-		this._resonseMsg = null;
-		this._responseMarkup = null;
-		this._id = null;
-		this._users = Object.values(config.get(`userId`));
-		this._guest = `guest`;
-		this._errorMsg = `errorMsg`;
+const getText = (msg) => {
+	const message = [msg];
+	const replyItem = reply.get(msg);
+	if (text.has(replyItem)) {
+		message.push(text.get(replyItem));
 	}
-
-	createResponse(id, msg) {
-		this._id = id;
-		this._msg = msg;
-
-		if (!this._reply.has(this._msg)) {
-			this._resonseMsg = `${this._reply.get(`errorMsg`)[0]}${this._msg}`;
-			this._responseMarkup = this._reply.get(`errorMsg`)[1];
-			// this._getResponse(this._msg);
-
-		} else if (!this._users.toString().includes(this._id)
-			&& this._reply.get(this._msg).includes(`guest`)) {
-			this._resonseMsg = `${this._reply.get(this._msg)[0]}${this._msg}`;
-			this._responseMarkup = this._reply.get(this._msg)[1];
-			// this._getResponse(this._guest);
-
-		} else if (!this._users.toString().includes(this._id)
-		&& !this._reply.get(this._msg).includes(`guest`)) {
-			this._resonseMsg = this._reply.get(`access`)[0];
-			this._responseMarkup = this._reply.get(`access`)[1];
-			// this._getResponse(this._msg);
-
-		} else if (this._users.toString().includes(this._id)) {
-			// this._resonseMsg = `${this._reply.get(this._msg)[0]}${this._msg}`;
-			// this._responseMarkup = this._reply.get(this._msg)[1];
-			this._getResponse(this._msg);
+	if (sensors.has(replyItem)) {
+		const listSensors = sensors.get(replyItem);
+		for (const item of listSensors) {
+			message.push(getTemp(item));
 		}
+	}
+	if (exersiseTypes.has(replyItem)) {
+
+	}
+	return message.join(`${line}`)
+};
 
 
-		this._sendMessage();
+const getResponse = (id, msg) => {
+	let responseMsg = ``;
+	let responseMarkup = {};
 
-		this._resonseMsg = null;
-		this._responseMarkup = null;
+	if (special.has(msg)) {
+		responseMsg = text.get(msg);
+		responseMarkup = keyboards.main;
+	} else {
+		responseMsg = getText(msg);
+		responseMarkup = keyboards.main;
 	}
 
-	_getResponse(msg) {
-		this._resonseMsg = `${this._reply.get(msg)[0]}${msg}`;
-		this._responseMarkup = this._reply.get(msg)[1];
-		this._sendMessage();
+
+
+	sendMessage(id, responseMsg, responseMarkup);
+};
+
+
+const sortResponseQuest = (id, msg) => {
+
+	if (!users.toString().includes(id)) {
+		// 	допуск гостям : запрет гостям
+		(access.has(reply.get(msg))) ? getResponse(id, msg) : getResponse(id, `access`);
+
+	} else {
+		// свои
+		getResponse(id, msg);
+	}
+};
+
+const sortResponseId = (response) => {
+	const id = response.from.id;
+	const msg = (response.text === undefined) ? response.data : response.text;
+	const firstName = response.from.first_name;
+	const userName = response.from.username;
+	//оповещение о гостях
+	if (!users.toString().includes(id)) {
+		getResponseAboutGuest(id, msg, firstName, userName);
 	}
 
-	_sendMessage() {
-		this._bot.sendMessage(this._id, this._resonseMsg, this._responseMarkup);
+	// незнакомая команда
+	(!reply.has(msg)) ? getResponse(id, `errorMsg`) : sortResponseQuest(id, msg);
+};
+
+
+const makeListener = (list) => {
+	for (const listener of list) {
+		bot.on(listener, (msg) => {
+			sortResponseId(msg);
+		});
 	}
+};
+
+const main = () => {
+	// createTasksSunPositions(bot);
+	makeListener(listenerList);
 }
 
-class Bot {
-	constructor() {
-		this._bot = bot;
-		this._sendmessage = new SendMessage();
-	}
-
-	init() {
-		this._makeListenerMessage();
-		this._makeListenerQuery();
-	}
-
-	_makeListenerMessage() {
-		this._bot.on(`message`, (msg) => {
-			this._id = msg.from.id;
-			this._msg = msg.text;
-			this._sendmessage.createResponse(this._id, this._msg);
-		})
-	}
-	_makeListenerQuery() {
-		this._bot.on(`callback_query`, (msg) => {
-			this._id = msg.from.id;
-			this._msg = msg.data;
-			this._sendmessage.createResponse(this._id, this._msg);
-		})
-	}
-}
-new Bot().init();
+main();
