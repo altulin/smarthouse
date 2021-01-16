@@ -22,13 +22,13 @@ export const getForecast = weather.getWeatherForecastForDays(3, (err, obj) => {
 
 	// console.log(obj.list);
 
-	const test = new Array(obj.list.length).fill(` `).map((item, i) =>{
-		const date =  new Date(obj.list[i].dt * 1000);
-		return `${date.getDate()}.${(date.getMonth() + 1)}.${date.getFullYear()}\n` +
-			`${obj.list[i].weather[0].description}\n` +
-			`ночью : ${obj.list[i].temp.night} °C\n` +
-			`днем : ${obj.list[i].temp.day} °C${line}`
-	}).join(` `);
+	// const test = new Array(obj.list.length).fill(` `).map((item, i) =>{
+	// 	const date =  new Date(obj.list[i].dt * 1000);
+	// 	return `${date.getDate()}.${(date.getMonth() + 1)}.${date.getFullYear()}\n` +
+	// 		`${obj.list[i].weather[0].description}\n` +
+	// 		`ночью : ${obj.list[i].temp.night} °C\n` +
+	// 		`днем : ${obj.list[i].temp.day} °C${line}`
+	// }).join(` `);
 
 	// let forecast = `Прогноз погоды :${line}`;
 	// obj.list.forEach((item) => {
@@ -41,5 +41,5 @@ export const getForecast = weather.getWeatherForecastForDays(3, (err, obj) => {
 	// });
 	// bot.sendMessage(id, forecast, keyboards.main);
 	// console.log(test)
-	return test
+	// return test
 });

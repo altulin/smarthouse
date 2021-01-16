@@ -1,11 +1,11 @@
 import { line } from "./weather.js";
 import { emoji, keyboards } from "./keyboard.js";
-// import { createExerisesPlan } from "./bodybuilding.js";
+import { createExerisesPlan } from "./bodybuilding.js";
 import { readFileSync } from "fs";
 import config from "config";
 import read from "ds18b20-raspi";
 
-export const getTemp = (detector) => {
+const getTemp = (detector) => {
   return `${emoji.therm} ${read.readC(config.get(`sensors`)[detector], 1)}`;
 };
 
@@ -15,24 +15,25 @@ const getTempRpi = () => {
 
 export const access = new Set([`street`, `other`, `back`, `triceps`, `legs`, `shoulders`, `chest`, `biceps`]);
 
-export const power = new Map([
+const power = new Map([
   [`street`, [`streetLamp`]],
   [`house`, [`houseHeat`]]
 ]);
 
-export const sensors = new Map([
+const sensors = new Map([
   ['street', [`streetTemp`]],
   [`house`, [`houseTemp`]]
 ]);
 
-export const text = new Map([
-  [`start`, `Выбери нужный пункт`],
+const text = new Map([
   [`other`, `Для связи в телеграмм: @altulin`],
   [`errorMsg`, `Эту команду я не знаю`],
   [`access`, `Эта команда для вас не доступна`],
 ]);
 
-export const exersiseTypes = new Set([`back`, `triceps`, `legs`, `shoulders`, `chest`, `biceps`]);
+const exersiseTypes = new Set([`back`, `triceps`, `legs`, `shoulders`, `chest`, `biceps`]);
+
+const special = new Set([`errorMsg`, `access`])
 
 export const reply = new Map([
   [`/start`, `start`],
@@ -46,6 +47,36 @@ export const reply = new Map([
   [`Грудь`, `chest`],
   [`Бицепс`, `biceps`]
 ]);
+
+export const getText = (msg) => {
+  const message = (special.has(msg)) ? [] : [msg];
+  const replyItem = reply.get(msg);
+
+  if (special.has(msg)) {
+    // спец текст
+    message.push(text.get(msg));
+  }
+
+  if (text.has(replyItem)) {
+    // текст
+    message.push(text.get(replyItem));
+  }
+
+  if (sensors.has(replyItem)) {
+    // датчики
+    const listSensors = sensors.get(replyItem);
+    for (const item of listSensors) {
+      message.push(getTemp(item));
+    }
+  }
+
+  if (exersiseTypes.has(replyItem)) {
+    // спорт
+    console.log(createExerisesPlan(replyItem))
+    message.push(createExerisesPlan(replyItem))
+  }
+  return message.join(`${line}`)
+};
 
 
 // const answers = new Map([

@@ -1,11 +1,9 @@
 // process.env.NTBA_FIX_319 = 1
 import { bot } from "./modules/bot.js";
-import { keyboards } from "./modules/keyboard.js";
-import { reply, text, access, getTemp, sensors, power, exersiseTypes } from "./modules/reply.js";
-import { line } from "./modules/weather.js";
+import { keyboards, getKeyboard } from "./modules/keyboard.js";
+import { reply, access, getText } from "./modules/reply.js";
 import config from "config";
 
-const special = new Set([`quest`, `errorMsg`, `access`]);
 const listenerList = [`message`, `callback_query`];
 const users = Object.values(config.get(`userId`));
 
@@ -23,39 +21,14 @@ const sendMessage = (id, responseMsg, responseMarkup) => {
 	bot.sendMessage(id, responseMsg, responseMarkup);
 };
 
-const getText = (msg) => {
-	const message = [msg];
-	const replyItem = reply.get(msg);
-	if (text.has(replyItem)) {
-		message.push(text.get(replyItem));
-	}
-	if (sensors.has(replyItem)) {
-		const listSensors = sensors.get(replyItem);
-		for (const item of listSensors) {
-			message.push(getTemp(item));
-		}
-	}
-	if (exersiseTypes.has(replyItem)) {
-
-	}
-	return message.join(`${line}`)
-};
-
 
 const getResponse = (id, msg) => {
 	let responseMsg = ``;
 	let responseMarkup = {};
 
-	if (special.has(msg)) {
-		responseMsg = text.get(msg);
-		responseMarkup = keyboards.main;
-	} else {
-		responseMsg = getText(msg);
-		responseMarkup = keyboards.main;
-	}
-
-
-
+	responseMsg = getText(msg);
+	responseMarkup = getKeyboard(reply.get(msg));
+	// responseMarkup = keyboards.main;
 	sendMessage(id, responseMsg, responseMarkup);
 };
 
@@ -74,12 +47,17 @@ const sortResponseQuest = (id, msg) => {
 
 const sortResponseId = (response) => {
 	const id = response.from.id;
+	const replyMessage = response.reply_to_message;
 	const msg = (response.text === undefined) ? response.data : response.text;
 	const firstName = response.from.first_name;
 	const userName = response.from.username;
 	//оповещение о гостях
 	if (!users.toString().includes(id)) {
 		getResponseAboutGuest(id, msg, firstName, userName);
+	}
+
+	if (replyMessage) {
+
 	}
 
 	// незнакомая команда
