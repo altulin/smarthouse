@@ -8,13 +8,13 @@ const listenerList = [`message`, `callback_query`];
 const users = Object.values(config.get(`userId`));
 
 
-const getResponseAboutGuest = (id, msg, first_name, username) => {
+const getResponseAboutGuest = (id, msg, firstname, username) => {
 	const myId = config.get(`myId`);
 	const responseMsg =
-		`У нас гости!\nимя: ${first_name}\nusername: @${username}\nid: ${id}\nкоманда: ${msg}`;
+		`У нас гости!\nимя: ${firstname}\nusername: @${username}\nid: ${id}\nкоманда: ${msg}`;
 	const responseMarkup = keyboards.main;
 	sendMessage(myId, responseMsg, responseMarkup);
-}
+};
 
 
 const sendMessage = (id, responseMsg, responseMarkup) => {
@@ -47,18 +47,18 @@ const sortResponseQuest = (id, msg) => {
 
 const sortResponseId = (response) => {
 	const id = response.from.id;
-	const replyMessage = response.reply_to_message;
+	// const replyMessage = response.reply_to_message;
 	const msg = (response.text === undefined) ? response.data : response.text;
 	const firstName = response.from.first_name;
 	const userName = response.from.username;
-	//оповещение о гостях
+	// оповещение о гостях
 	if (!users.toString().includes(id)) {
 		getResponseAboutGuest(id, msg, firstName, userName);
 	}
 
-	if (replyMessage) {
+	// if (replyMessage) {
 
-	}
+	// }
 
 	// незнакомая команда
 	(!reply.has(msg)) ? getResponse(id, `errorMsg`) : sortResponseQuest(id, msg);
@@ -76,6 +76,6 @@ const makeListener = (list) => {
 const main = () => {
 	// createTasksSunPositions(bot);
 	makeListener(listenerList);
-}
+};
 
 main();

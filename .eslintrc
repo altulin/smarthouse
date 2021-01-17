@@ -1,26 +1,48 @@
 // root: true,
-
 // env:
 //   es6: true,
 //   browser: true,
 //   node: true
-
 // "rules": {
 //        "indent": [2, "tab"]
-//     }  
-
+//     }
 // extends:
 //   "htmlacademy/es5.5"
-
 {
-    "root": true,
-    "env": {
-      "es6": true,
-      "browser": true,
-      "node": true
-    },
-    "rules": {
-      "indent": [0, "tab"]
-    },
-    "extends": ["htmlacademy/es5.5"]
+  "root": true,
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "indent": [
+      0,
+      "tab"
+    ],
+    "object-curly-spacing": [
+      1,
+      "always"
+    ],
+    "no-unused-expressions": [
+      "error",
+      {
+        "allowTernary": true
+      }
+    ],
+    "no-multi-spaces": [
+      "error",
+      {
+        "exceptions": {
+          "ImportDeclaration": true
+        }
+      }
+    ]
+  },
+  "extends": [
+    "htmlacademy/es5.5"
+  ],
+  "parserOptions": {
+    "sourceType": "module"
+  }
 }

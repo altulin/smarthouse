@@ -1,5 +1,5 @@
 import weather from "openweather-apis";
-import { keyboards } from "./keyboard.js";
+// import { keyboards } from "./keyboard.js";
 import config from "config";
 export const line = `
 ================
@@ -10,12 +10,10 @@ weather.setUnits(`metric`);
 weather.setAPPID(config.get(`key`));
 
 
-
-
 export const getForecast = weather.getWeatherForecastForDays(3, (err, obj) => {
 	if (err) {
 		// bot.sendMessage(id, `Что-то пошло не так!`, keyboards.main);
-		console.log(`Что-то пошло не так!`)
+
 	} else {
 
 	}

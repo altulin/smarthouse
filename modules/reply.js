@@ -1,40 +1,66 @@
 import { line } from "./weather.js";
-import { emoji, keyboards } from "./keyboard.js";
+import { emoji } from "./utils.js";
 import { createExerisesPlan } from "./bodybuilding.js";
 import { readFileSync } from "fs";
 import config from "config";
 import read from "ds18b20-raspi";
 
+
+// температура с датчика ds18b20
 const getTemp = (detector) => {
   return `${emoji.therm} ${read.readC(config.get(`sensors`)[detector], 1)}`;
 };
 
-const getTempRpi = () => {
-  return (readFileSync(`/sys/class/thermal/thermal_zone0/temp`) / 1000).toPrecision(3);
-};
+// const getTempRpi = () => {
+//   return (readFileSync(`/sys/class/thermal/thermal_zone0/temp`) / 1000).toPrecision(3);
+// };
 
-export const access = new Set([`street`, `other`, `back`, `triceps`, `legs`, `shoulders`, `chest`, `biceps`]);
+// команды разрешенные для гостей
+export const access = new Set([
+  `street`, `other`, `back`, `triceps`, `legs`, `shoulders`, `chest`, `biceps`, 'athlete'
+]);
 
-const power = new Map([
+
+// список включаемого оборудования
+export const power = new Map([
   [`street`, [`streetLamp`]],
   [`house`, [`houseHeat`]]
 ]);
 
+
+// список датчиков
 const sensors = new Map([
-  ['street', [`streetTemp`]],
+  [`street`, [`streetTemp`]],
   [`house`, [`houseTemp`]]
 ]);
 
+
+// текст для команд
 const text = new Map([
   [`other`, `Для связи в телеграмм: @altulin`],
   [`errorMsg`, `Эту команду я не знаю`],
   [`access`, `Эта команда для вас не доступна`],
 ]);
 
-const exersiseTypes = new Set([`back`, `triceps`, `legs`, `shoulders`, `chest`, `biceps`]);
 
-const special = new Set([`errorMsg`, `access`])
+// список команд спорт
+export const exersiseTypes = new Set([
+  `back`, `triceps`, `legs`, `shoulders`, `chest`, `biceps`
+]);
 
+
+// список спец команд
+const special = new Set([`errorMsg`, `access`]);
+
+
+// список команд с инлайн клавиатурой
+export const inline = new Map([
+  [`street`, [`weather`]],
+  [`house`, [`gear`, `counter`]],
+  [`other`, ['athlete']]
+]);
+
+// список всех команд
 export const reply = new Map([
   [`/start`, `start`],
   [`${emoji.tree} Улица`, `street`],
@@ -45,7 +71,11 @@ export const reply = new Map([
   [`Ноги`, `legs`],
   [`Плечи`, `shoulders`],
   [`Грудь`, `chest`],
-  [`Бицепс`, `biceps`]
+  [`Бицепс`, `biceps`],
+  [`Погода`, `weather`],
+  [`Настройки`, `gear`],
+  [`Счетчики`, `counter`],
+  [`Качалка`, 'athlete']
 ]);
 
 export const getText = (msg) => {
@@ -72,10 +102,9 @@ export const getText = (msg) => {
 
   if (exersiseTypes.has(replyItem)) {
     // спорт
-    console.log(createExerisesPlan(replyItem))
-    message.push(createExerisesPlan(replyItem))
+    message.push(createExerisesPlan(replyItem));
   }
-  return message.join(`${line}`)
+  return message.join(`${line}`);
 };
 
 

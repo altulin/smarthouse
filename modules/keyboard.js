@@ -1,31 +1,56 @@
-export const emoji = {
-	tree: `\u{1F332}`,
-	therm: `\u{1F321}`,
-	lamp: `\u{1F4A1}`,
-	man: `\u{1f3cb}`,
-	house: `\u{1F3E1}`,
-	umbrella: `\u{2602}`,
-	envelope: `\u{2709}`,
-	backhand: `\u{1F447}`,
-	hot: `\u{2668}`,
-	gear: `\u{2699}`,
-	hammer: `\u{1f6e0}`,
-	clock: `\u{1f55b}`,
-	proc: `\u{1F4BB}`,
-	face: `\u{1F636}`,
-	pouting: `\u{1F621}`
-};
+import { power, reply, exersiseTypes } from "./reply.js";
+import { emoji } from "./utils.js";
+
+
+
+
+// список команд с инлайн клавиатурой
+const inline = new Map([
+	[`street`, [`weather`]],
+	[`house`, [`gear`, `counter`]],
+	[`other`, ['athlete']]
+]);
+
+const getTextCommand = (value) => {
+	return [...reply].find(([key, val]) => val === value)[0]
+}
 
 export const getKeyboard = (msg) => {
-	let keyboard = {};
-	switch (msg) {
-		case `other`:
-			keyboard = keyboards.other
-			break
+	const markup = {
+		"reply_markup": {
+			"inline_keyboard": []
+		}
+	};
+
+	const markupArr = markup.reply_markup.inline_keyboard
+
+	// управляемое вкл выкл
+	if (power.has(msg)) {
+		for (const item of power.get(msg)) {
+			markupArr.push([{ "text": `${item}`, "callback_data": `lampExitOn` }]);
+		}
 	}
-	console.log(keyboard)
-	return keyboard;
-}
+
+	// разные
+	if (inline.has(msg)) {
+		for (const item of inline.get(msg)) {
+			markupArr.push([{ "text": `${getTextCommand(item)}`, "callback_data": `${getTextCommand(item)}` }]);
+		}
+	}
+
+	// Качалка
+	if (msg === 'athlete') {
+		for (const item of exersiseTypes) {
+			markupArr.push([{ "text": `${getTextCommand(item)}`, "callback_data": `${getTextCommand(item)}` }]);
+		}
+	}
+
+
+	// console.log(markupArr)
+	// console.log([...reply].find(([key, val]) => val === `chest`)[0])
+	return markup;
+	// return keyboards.main;
+};
 
 export const keyboards = {
 	main: {
