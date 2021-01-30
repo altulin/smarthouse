@@ -1,4 +1,4 @@
-import { power, reply, exersiseTypes } from "./reply.js";
+import { power, reply, exersiseTypes, special } from "./reply.js";
 import { emoji } from "./utils.js";
 
 
@@ -22,6 +22,13 @@ export const getKeyboard = (msg) => {
 		}
 	};
 
+	const markupStart = {
+		"reply_markup": {
+			"keyboard": [[`${emoji.house} Дом`, `${emoji.tree} Улица`, `Разное`]],
+			"resize_keyboard": true
+		}
+	}
+
 	const markupArr = markup.reply_markup.inline_keyboard
 
 	// управляемое вкл выкл
@@ -39,10 +46,19 @@ export const getKeyboard = (msg) => {
 	}
 
 	// Качалка
-	if (msg === 'athlete') {
+	if (msg === `athlete`) {
 		for (const item of exersiseTypes) {
 			markupArr.push([{ "text": `${getTextCommand(item)}`, "callback_data": `${getTextCommand(item)}` }]);
 		}
+	}
+	// console.log(msg)
+	// спец команды
+	if (special.has(msg)) {
+		return markupStart;
+	}
+
+	if (msg === `weather`) {
+		return markupStart;
 	}
 
 
@@ -55,7 +71,7 @@ export const getKeyboard = (msg) => {
 export const keyboards = {
 	main: {
 		"reply_markup": {
-			"keyboard": [[`${emoji.house} Дом`, `${emoji.tree} Улица`, `Разное`]],
+			"keyboard": [[`${emoji.house} Дом.`, `${emoji.tree} Улица`, `Разное`]],
 			"resize_keyboard": true
 		}
 	},

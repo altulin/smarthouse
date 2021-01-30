@@ -1,4 +1,4 @@
-import { line } from "./weather.js";
+import { line, getForecast } from "./weather.js";
 import { emoji } from "./utils.js";
 import { createExerisesPlan } from "./bodybuilding.js";
 import { readFileSync } from "fs";
@@ -17,7 +17,7 @@ const getTemp = (detector) => {
 
 // команды разрешенные для гостей
 export const access = new Set([
-  `street`, `other`, `back`, `triceps`, `legs`, `shoulders`, `chest`, `biceps`, 'athlete'
+  `street`, `other`, `back`, `triceps`, `legs`, `shoulders`, `chest`, `biceps`, 'athlete', `/start`
 ]);
 
 
@@ -40,6 +40,7 @@ const text = new Map([
   [`other`, `Для связи в телеграмм: @altulin`],
   [`errorMsg`, `Эту команду я не знаю`],
   [`access`, `Эта команда для вас не доступна`],
+  [`/start`, `Привет`]
 ]);
 
 
@@ -50,7 +51,7 @@ export const exersiseTypes = new Set([
 
 
 // список спец команд
-const special = new Set([`errorMsg`, `access`]);
+export const special = new Set([`errorMsg`, `access`, `start`]);
 
 
 // список команд с инлайн клавиатурой
@@ -76,6 +77,7 @@ export const reply = new Map([
   [`Настройки`, `gear`],
   [`Счетчики`, `counter`],
   [`Качалка`, 'athlete']
+
 ]);
 
 export const getText = (msg) => {
@@ -104,8 +106,16 @@ export const getText = (msg) => {
     // спорт
     message.push(createExerisesPlan(replyItem));
   }
+
+  if (replyItem === `weather`) {
+    // message.push(getForecast());
+  }
   return message.join(`${line}`);
 };
+
+const promise = new Promise(function (resolve, reject) {
+
+})
 
 
 // const answers = new Map([

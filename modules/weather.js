@@ -12,21 +12,25 @@ weather.setAPPID(config.get(`key`));
 
 export const getForecast = weather.getWeatherForecastForDays(3, (err, obj) => {
 	if (err) {
-		// bot.sendMessage(id, `Что-то пошло не так!`, keyboards.main);
+		;
+		return `Что-то пошло не так!`
 
 	} else {
+		const test = new Array(obj.list.length).fill(` `).map((item, i) => {
+			const date = new Date(obj.list[i].dt * 1000);
+			return `${date.getDate()}.${(date.getMonth() + 1)}.${date.getFullYear()}\n` +
+				`${obj.list[i].weather[0].description}\n` +
+				`ночью : ${obj.list[i].temp.night} °C\n` +
+				`днем : ${obj.list[i].temp.day} °C${line}`
+		}).join(` `);
 
+		console.log(test)
+		return test;
 	}
 
 	// console.log(obj.list);
 
-	// const test = new Array(obj.list.length).fill(` `).map((item, i) =>{
-	// 	const date =  new Date(obj.list[i].dt * 1000);
-	// 	return `${date.getDate()}.${(date.getMonth() + 1)}.${date.getFullYear()}\n` +
-	// 		`${obj.list[i].weather[0].description}\n` +
-	// 		`ночью : ${obj.list[i].temp.night} °C\n` +
-	// 		`днем : ${obj.list[i].temp.day} °C${line}`
-	// }).join(` `);
+
 
 	// let forecast = `Прогноз погоды :${line}`;
 	// obj.list.forEach((item) => {

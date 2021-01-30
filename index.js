@@ -23,11 +23,11 @@ const sendMessage = (id, responseMsg, responseMarkup) => {
 
 
 const getResponse = (id, msg) => {
-	let responseMsg = ``;
-	let responseMarkup = {};
+	// let responseMsg = ``;
+	// let responseMarkup = {};
 
-	responseMsg = getText(msg);
-	responseMarkup = getKeyboard(reply.get(msg));
+	const responseMsg = getText(msg);
+	const responseMarkup = getKeyboard(reply.get(msg));
 	// responseMarkup = keyboards.main;
 	sendMessage(id, responseMsg, responseMarkup);
 };
